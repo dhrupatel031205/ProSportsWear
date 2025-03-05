@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "806706769323",
+    "project_id": "prosportwear-873bc",
+    "storage_bucket": "prosportwear-873bc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:806706769323:android:860f16b44e7d51e65576ee",
+        "android_client_info": {
+          "package_name": "com.example.prosportswear"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXIjyPl3pZT96IFXk3Nm0m4Cfsewr9fX0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:806706769323:android:1a894ff9fdab5ae05576ee",
+        "android_client_info": {
+          "package_name": "com.example.prosportwear"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXIjyPl3pZT96IFXk3Nm0m4Cfsewr9fX0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

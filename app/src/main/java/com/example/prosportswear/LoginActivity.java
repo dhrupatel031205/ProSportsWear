@@ -49,6 +49,7 @@ public class LoginActivity extends AppCompatActivity {
         register.setOnClickListener(view -> {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent);
+            finish();
         });
 
         // Login Button Click Event

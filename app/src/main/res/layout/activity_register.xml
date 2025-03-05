@@ -5,21 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="24dp"
+    android:background="@drawable/gradient_bg"
     tools:context=".RegisterActivity">
 
     <!-- Container for Fields -->
     <androidx.cardview.widget.CardView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="10dp"
         android:padding="24dp"
         android:background="@android:color/white"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.6"> <!-- 60% of screen height -->
+        app:layout_constraintHeight_percent="0.6">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -34,66 +35,67 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Register"
-                android:textSize="28sp"
+                android:textSize="30sp"
                 android:textStyle="bold"
-                android:textColor="#005CFA"
+                android:textColor="#5C00FA"
                 android:gravity="center"
+                android:fontFamily="sans-serif-medium"
                 android:paddingBottom="20dp"/>
 
             <!-- Name Input -->
             <EditText
                 android:id="@+id/editTextName"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:hint="Enter Name"
                 android:padding="14dp"
-                android:background="@android:drawable/editbox_background"
+                android:background="@drawable/rounded_input"
                 android:inputType="textPersonName"
                 android:textSize="16sp"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginBottom="12dp"/>
 
             <!-- Email Input -->
             <EditText
                 android:id="@+id/editTextEmail"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:hint="Enter Email"
                 android:padding="14dp"
-                android:background="@android:drawable/editbox_background"
+                android:background="@drawable/rounded_input"
                 android:inputType="textEmailAddress"
                 android:textSize="16sp"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginBottom="12dp"/>
 
             <!-- Password Input -->
             <EditText
                 android:id="@+id/editTextPassword"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:hint="Enter Password"
                 android:padding="14dp"
-                android:background="@android:drawable/editbox_background"
+                android:background="@drawable/rounded_input"
                 android:inputType="textPassword"
                 android:textSize="16sp"
-                android:layout_marginBottom="20dp" />
+                android:layout_marginBottom="20dp"/>
 
+            <!-- Register Button -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/buttonRegister"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Register"
+                android:textSize="18sp"
+                android:textColor="@android:color/white"
+                android:background="@drawable/rounded_button"
+                android:elevation="8dp"
+                android:layout_marginBottom="15dp"/>
+
+            <!-- ProgressBar (Initially Hidden) -->
             <ProgressBar
                 android:id="@+id/progress"
                 android:visibility="gone"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-            </ProgressBar>
-            <!-- Register Button -->
-            <Button
-                android:id="@+id/buttonRegister"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Register"
-                android:backgroundTint="#005CFA"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
-                android:padding="14dp"
-                android:layout_marginBottom="15dp" />
+                android:layout_height="wrap_content"/>
 
             <!-- Already have an account? Login -->
             <TextView
@@ -102,7 +104,7 @@
                 android:layout_height="wrap_content"
                 android:text="Already have an account? Login"
                 android:textSize="16sp"
-                android:textColor="#005CFA"
+                android:textColor="#5C00FA"
                 android:textStyle="bold"
                 android:padding="12dp"
                 android:clickable="true"

@@ -1,5 +1,6 @@
 package com.example.prosportswear;
 
+import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -14,13 +15,20 @@ import androidx.core.view.WindowInsetsCompat;
 public class HomeActivity extends AppCompatActivity {
 
 
+
+
     Button logout;
+
+    ClipData.Item home, store, cart, profile;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
         logout = findViewById(R.id.logoutBtn);
+
+
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -29,5 +37,7 @@ public class HomeActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+
     }
 }

@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -40,7 +41,7 @@ public class RegisterActivity extends AppCompatActivity {
         passT = findViewById(R.id.editTextPassword);
         registerBtn = findViewById(R.id.buttonRegister);
         login = findViewById(R.id.textViewLogin);
-        progress = findViewById(R.id.progress); // Make sure you have a ProgressBar in XML
+        progress = findViewById(R.id.progress);
 
         // Navigate to Login Activity
         login.setOnClickListener(view -> {
@@ -51,11 +52,17 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Register Button Click Event
         registerBtn.setOnClickListener(view -> {
-            progress.setVisibility(View.VISIBLE); // Show progress bar
+            progress.setVisibility(View.VISIBLE);
 
+            String name = nameT.getText().toString().trim();
             String email = emailT.getText().toString().trim();
             String pass = passT.getText().toString().trim();
 
+            if (TextUtils.isEmpty(name)) {
+                Toast.makeText(RegisterActivity.this, "Enter Name", Toast.LENGTH_SHORT).show();
+                progress.setVisibility(View.GONE);
+                return;
+            }
             if (TextUtils.isEmpty(email)) {
                 Toast.makeText(RegisterActivity.this, "Enter Email", Toast.LENGTH_SHORT).show();
                 progress.setVisibility(View.GONE);
@@ -70,29 +77,31 @@ public class RegisterActivity extends AppCompatActivity {
             // Firebase Registration
             auth.createUserWithEmailAndPassword(email, pass)
                     .addOnCompleteListener(RegisterActivity.this, task -> {
-                        progress.setVisibility(View.GONE); // Hide progress bar
+                        progress.setVisibility(View.GONE);
 
                         if (task.isSuccessful()) {
-                            Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = auth.getCurrentUser();
-                            Toast.makeText(RegisterActivity.this, "Registration Successful!", Toast.LENGTH_SHORT).show();
-                            updateUI(user);
-                            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-                            finish();
+                            if (user != null) {
+                                // Save user name in Firebase Authentication
+                                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                        .setDisplayName(name)  // Set the user's name
+                                        .build();
+
+                                user.updateProfile(profileUpdates)
+                                        .addOnCompleteListener(task1 -> {
+                                            if (task1.isSuccessful()) {
+                                                Log.d(TAG, "User profile updated.");
+                                                Toast.makeText(RegisterActivity.this, "Registration Successful!", Toast.LENGTH_SHORT).show();
+                                                startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                                                finish();
+                                            }
+                                        });
+                            }
                         } else {
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(RegisterActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                            updateUI(null);
                         }
                     });
         });
-    }
-
-    private void updateUI(FirebaseUser user) {
-        if (user != null) {
-            Toast.makeText(this, "Welcome " + user.getEmail(), Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Please try again", Toast.LENGTH_SHORT).show();
-        }
     }
 }

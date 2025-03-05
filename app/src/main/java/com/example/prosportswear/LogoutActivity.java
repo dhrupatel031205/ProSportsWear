@@ -11,23 +11,24 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class HomeActivity extends AppCompatActivity {
+public class LogoutActivity extends AppCompatActivity {
 
-
-    Button logout;
+    Button login;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_logout);
 
-        logout = findViewById(R.id.logoutBtn);
-        logout.setOnClickListener(new View.OnClickListener() {
+        login = findViewById(R.id.loginB);
+        login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(HomeActivity.this,LogoutActivity.class);
+                Intent intent = new Intent(LogoutActivity.this,LoginActivity.class);
                 startActivity(intent);
                 finish();
             }
         });
+
+
     }
 }

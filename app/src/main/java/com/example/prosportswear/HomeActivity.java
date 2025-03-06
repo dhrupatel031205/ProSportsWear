@@ -1,5 +1,4 @@
 package com.example.prosportswear;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -37,6 +36,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(HomeActivity.this, CartActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -46,6 +46,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(HomeActivity.this, StoreActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -58,6 +59,5 @@ public class HomeActivity extends AppCompatActivity {
                 finish(); // Close HomeActivity
             }
         });
-
     }
 }

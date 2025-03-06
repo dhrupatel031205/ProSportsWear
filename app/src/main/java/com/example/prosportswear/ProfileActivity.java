@@ -7,79 +7,65 @@ import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class ProfileActivity extends AppCompatActivity {
-
-    private TextView tvUserName, tvUserEmail;
-    private FirebaseAuth mAuth;
-    Button logout;
-
-    Button home, store, cart, profile;
+    Button logout, home, store, cart, profile;
+    TextView userName, userEmail;
+    FirebaseAuth auth;
+    FirebaseUser user;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        logout = findViewById(R.id.btn_logout);
-        profile = findViewById(R.id.btn_profile);
-        cart = findViewById(R.id.btn_cart);
-        store = findViewById(R.id.btn_store);
-        home = findViewById(R.id.btn_home);
+        // Initialize Firebase Auth
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
 
-        tvUserName = findViewById(R.id.name);
-        tvUserEmail = findViewById(R.id.email);
-        mAuth = FirebaseAuth.getInstance();
+        // Initialize UI Components
+        logout = findViewById(R.id.logoutBtn2);
+        home = findViewById(R.id.home_button);
+        store = findViewById(R.id.store_button);
+        cart = findViewById(R.id.cart_button);
+        profile = findViewById(R.id.profile_button);
 
-        // Get current logged-in user
-        FirebaseUser user = mAuth.getCurrentUser();
+        userName = findViewById(R.id.user_name);
+        userEmail = findViewById(R.id.user_email);
+
+        // Check if user is logged in
         if (user != null) {
-            tvUserName.setText(user.getDisplayName() != null ? user.getDisplayName() : "No Name");
-            tvUserEmail.setText(user.getEmail());
+            userEmail.setText(user.getEmail()); // Get email from Firebase
+
+            // Get display name if available
+            if (user.getDisplayName() != null) {
+                userName.setText(user.getDisplayName());
+            } else {
+                userName.setText("No Name Provided");
+            }
+        } else {
+            userName.setText("Guest");
+            userEmail.setText("Not Logged In");
         }
 
-        cart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ProfileActivity.this, CartActivity.class);
-                startActivity(intent);
-                finish();
-            }
+        // Navigation Buttons
+        home.setOnClickListener(view -> navigateTo(HomeActivity.class));
+        store.setOnClickListener(view -> navigateTo(StoreActivity.class));
+        cart.setOnClickListener(view -> navigateTo(CartActivity.class));
+
+        // Logout Button
+        logout.setOnClickListener(view -> {
+            auth.signOut();
+            startActivity(new Intent(ProfileActivity.this, LoginActivity.class));
+            finish(); // Close ProfileActivity
         });
-
-        // Store Button Click
-        store.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ProfileActivity.this, StoreActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-        // Logout Button Click
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ProfileActivity.this, LogoutActivity.class);
-                startActivity(intent);
-                finish(); // Close HomeActivity
-            }
-        });
-
-
-        home.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ProfileActivity.this, HomeActivity.class);
-                startActivity(intent);
-                finish(); // Close HomeActivity
-            }
-        });
-
     }
 
-
+    private void navigateTo(Class<?> activity) {
+        startActivity(new Intent(ProfileActivity.this, activity));
+        finish();
+    }
 }

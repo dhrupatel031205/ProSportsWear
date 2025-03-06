@@ -15,7 +15,7 @@
         android:background="@drawable/gradient_bg">
 
         <TextView
-            android:id="@+id/shoe_name"
+            android:id="@+id/cart_shoe_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Shoe Name"
@@ -26,18 +26,17 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/shoe_company"
+            android:id="@+id/cart_shoe_company"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Company Name"
             android:textSize="14sp"
             android:textColor="#FFFFFF"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/shoe_name"
-            app:layout_constraintBottom_toTopOf="@id/shoe_price"/>
+            app:layout_constraintTop_toBottomOf="@id/cart_shoe_name" />
 
         <TextView
-            android:id="@+id/shoe_price"
+            android:id="@+id/cart_shoe_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Price"
@@ -45,44 +44,17 @@
             android:textStyle="bold"
             android:textColor="#FFFFFF"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/shoe_company" />
+            app:layout_constraintTop_toBottomOf="@id/cart_shoe_company" />
 
         <TextView
-            android:id="@+id/shoe_count"
+            android:id="@+id/cart_quantity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Stock"
+            android:text="Quantity: "
             android:textSize="14sp"
             android:textColor="#FFFFFF"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/shoe_price" />
+            app:layout_constraintTop_toBottomOf="@id/cart_shoe_price" />
 
-        <!-- Quantity Selector -->
-        <EditText
-            android:id="@+id/quantity_input"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:hint="Qty"
-            android:textColorHint="@color/white"
-            android:inputType="number"
-            android:textColor="#FFFFFF"
-            android:background="@android:color/transparent"
-            app:layout_constraintTop_toBottomOf="@id/shoe_count"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:gravity="center" />
-
-        <!-- Add to Cart Button -->
-        <Button
-            android:id="@+id/add_to_cart_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Add to Cart"
-            android:backgroundTint="#FF9800"
-            android:textColor="#FFFFFF"
-            app:layout_constraintTop_toBottomOf="@id/quantity_input"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

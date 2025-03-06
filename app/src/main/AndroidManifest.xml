@@ -13,28 +13,28 @@
         android:theme="@style/Theme.ProSportsWear"
         tools:targetApi="31">
         <activity
-            android:name=".ProfileActivity"
+            android:name=".activity.ProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".CartActivity"
+            android:name=".activity.CartActivity"
             android:exported="false" />
         <activity
-            android:name=".StoreActivity"
+            android:name=".activity.StoreActivity"
             android:exported="false" />
         <activity
-            android:name=".LogoutActivity"
+            android:name=".activity.LogoutActivity"
             android:exported="false" />
         <activity
-            android:name=".HomeActivity"
+            android:name=".activity.HomeActivity"
             android:exported="false" />
         <activity
-            android:name=".RegisterActivity"
+            android:name=".activity.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".activity.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

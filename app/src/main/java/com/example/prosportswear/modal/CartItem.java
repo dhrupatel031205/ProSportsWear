@@ -1,4 +1,4 @@
-package com.example.prosportswear;
+package com.example.prosportswear.modal;
 
 public class CartItem {
     private String shoeName;

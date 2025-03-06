@@ -1,4 +1,4 @@
-package com.example.prosportswear;
+package com.example.prosportswear.modal;
 public class Shoe {
     private String name, companyName;
     private int count, price, id;

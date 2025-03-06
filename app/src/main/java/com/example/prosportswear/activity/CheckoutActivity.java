@@ -1,14 +1,17 @@
-package com.example.prosportswear;
+package com.example.prosportswear.activity;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.prosportswear.R;
+import com.example.prosportswear.adapter.CheckoutAdapter;
+import com.example.prosportswear.modal.CartItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -42,6 +45,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
         loadCheckoutItems();
     }
+    @SuppressLint({"NotifyDataSetChanged", "SetTextI18n"})
     private void loadCheckoutItems() {
         if (auth.getCurrentUser() == null) {
             Toast.makeText(this, "User not logged in!", Toast.LENGTH_SHORT).show();
@@ -63,6 +67,6 @@ public class CheckoutActivity extends AppCompatActivity {
                     checkoutAdapter.notifyDataSetChanged();
                     totalAmountText.setText("Total: $" + totalAmount);
                 })
-                .addOnFailureListener(e -> e.printStackTrace());
+                .addOnFailureListener(Throwable::printStackTrace);
     }
 }

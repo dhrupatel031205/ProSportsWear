@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:padding="24dp"
     android:background="@drawable/gradient_bg"
-    tools:context=".LoginActivity">
+    tools:context=".activity.LoginActivity">
 
     <!-- CardView Container for Centering -->
     <androidx.cardview.widget.CardView

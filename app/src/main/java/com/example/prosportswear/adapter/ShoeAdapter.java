@@ -1,4 +1,4 @@
-package com.example.prosportswear;
+package com.example.prosportswear.adapter;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +12,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.prosportswear.R;
+import com.example.prosportswear.modal.Shoe;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 

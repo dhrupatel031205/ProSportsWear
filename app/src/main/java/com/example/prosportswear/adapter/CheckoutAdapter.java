@@ -1,5 +1,6 @@
-package com.example.prosportswear;
+package com.example.prosportswear.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,6 +8,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.prosportswear.modal.CartItem;
+import com.example.prosportswear.R;
 
 import java.util.List;
 
@@ -24,6 +28,7 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.Checko
         return new CheckoutViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull CheckoutViewHolder holder, int position) {
         CartItem item = checkoutItems.get(position);
@@ -36,7 +41,7 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.Checko
         return checkoutItems.size();
     }
 
-    static class CheckoutViewHolder extends RecyclerView.ViewHolder {
+    public class CheckoutViewHolder extends RecyclerView.ViewHolder {
         TextView itemName, itemPrice;
 
         public CheckoutViewHolder(@NonNull View itemView) {

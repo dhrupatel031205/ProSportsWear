@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:padding="24dp"
     android:background="@drawable/gradient_bg"
-    tools:context=".RegisterActivity">
+    tools:context=".activity.RegisterActivity">
 
     <!-- Container for Fields -->
     <androidx.cardview.widget.CardView

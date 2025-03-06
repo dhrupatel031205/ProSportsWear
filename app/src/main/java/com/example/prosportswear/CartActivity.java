@@ -4,28 +4,24 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 public class CartActivity extends AppCompatActivity {
-
-    Button logout, home,cart,store,profile;
+    Button logout, home, store, cart, profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
 
-        home = findViewById(R.id.home_button);
+        // Initialize buttons
+        logout = findViewById(R.id.logoutBtn2);
+        profile = findViewById(R.id.profile_button);
         cart = findViewById(R.id.cart_button);
         store = findViewById(R.id.store_button);
-        profile = findViewById(R.id.profile_button);
-        logout = findViewById(R.id.logoutBtn);
+        home = findViewById(R.id.home_button);
 
+        // Home Button Click
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -35,15 +31,7 @@ public class CartActivity extends AppCompatActivity {
             }
         });
 
-
-        cart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-
-
+        // Store Button Click
         store.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -53,7 +41,15 @@ public class CartActivity extends AppCompatActivity {
             }
         });
 
+        // Cart Button Click (Current Activity - No Action Needed)
+        cart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // User is already on CartActivity, so do nothing
+            }
+        });
 
+        // Profile Button Click
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,15 +59,14 @@ public class CartActivity extends AppCompatActivity {
             }
         });
 
-
+        // Logout Button Click
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(CartActivity.this, LogoutActivity.class);
                 startActivity(intent);
-                finish();
+                finish(); // Close CartActivity
             }
         });
-
     }
 }

@@ -9,6 +9,22 @@
     tools:context=".CartActivity">
 
     <!-- Page Title -->
+
+    <TextView
+        android:id="@+id/cart_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="0dp"
+        android:text="Cart"
+        android:textColor="@color/black"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/logoutBtn2"
+        app:layout_constraintHorizontal_bias="0.204"
+        app:layout_constraintStart_toEndOf="@+id/app_logo2"
+        tools:layout_editor_absoluteY="30dp" />
+
     <TextView
         android:id="@+id/welcome_text2"
         android:layout_width="wrap_content"
@@ -24,11 +40,15 @@
         app:layout_constraintTop_toBottomOf="@id/app_logo2" />
 
     <!-- Logo -->
+
+    <!-- Logout Button -->
+
     <ImageView
         android:id="@+id/app_logo2"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_margin="16dp"
+        android:layout_marginStart="16dp"
         android:contentDescription="App Logo"
         android:src="@drawable/logo"
         app:layout_constraintBottom_toTopOf="@id/welcome_text2"
@@ -36,7 +56,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.136" />
 
-    <!-- Logout Button -->
     <Button
         android:id="@+id/logoutBtn2"
         android:layout_width="wrap_content"

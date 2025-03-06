@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,15 +14,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.prosportswear.R;
 import com.example.prosportswear.adapter.ShoeAdapter;
 import com.example.prosportswear.modal.Shoe;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class StoreActivity extends AppCompatActivity {
+
     private RecyclerView recyclerView;
     private ShoeAdapter shoeAdapter;
     private List<Shoe> shoeList;
@@ -32,7 +32,7 @@ public class StoreActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_store);  // Make sure XML file is correct
+        setContentView(R.layout.activity_store);
 
         // Initialize UI components
         recyclerView = findViewById(R.id.shoeRecyclerView);
@@ -55,38 +55,52 @@ public class StoreActivity extends AppCompatActivity {
 
         // Button Listeners
         btnCart.setOnClickListener(v -> {
-            Intent intent = new Intent(StoreActivity.this,CartActivity.class);
+            Intent intent = new Intent(StoreActivity.this, CartActivity.class);
             startActivity(intent);
             finish();
         });
 
         btnProfile.setOnClickListener(v -> {
-            Intent intent = new Intent(StoreActivity.this,ProfileActivity.class);
+            Intent intent = new Intent(StoreActivity.this, ProfileActivity.class);
             startActivity(intent);
             finish();
         });
 
         btnRefresh.setOnClickListener(v -> {
-
-            Intent intent = new Intent(StoreActivity.this,HomeActivity.class);
+            Intent intent = new Intent(StoreActivity.this, HomeActivity.class);
             startActivity(intent);
             finish();
         });
     }
 
     private void loadShoes() {
-        CollectionReference shoeRef = db.collection("Shoe");
-        shoeRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                shoeList.clear();
-                for (QueryDocumentSnapshot doc : task.getResult()) {
-                    Shoe shoe = doc.toObject(Shoe.class);
-                    shoeList.add(shoe);
-                }
-                shoeAdapter.notifyDataSetChanged();
-            } else {
-                Log.e("Firestore", "Error fetching data", task.getException());
-            }
-        });
+        db.collection("Store") // ✅ Make sure Firestore collection name is "shoes"
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        shoeList.clear(); // ✅ Clear list before adding new data
+                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                            try {
+                                String id = document.getId();
+                                String shoeName = document.getString("shoeName");
+                                String company = document.getString("company");
+                                double price = document.getDouble("price");
+                                long stock = document.getLong("count");
+
+                                // ✅ Add to list
+                                shoeList.add(new Shoe(id, shoeName, company, price, (int) stock));
+                            } catch (Exception e) {
+                                Log.e("FirestoreError", "Error mapping document: " + e.getMessage());
+                            }
+                        }
+                        shoeAdapter.notifyDataSetChanged(); // ✅ Refresh adapter after data update
+                    } else {
+                        Toast.makeText(this, "No store items found.", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Failed to load store data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e("FirestoreError", "Error loading shoes: " + e.getMessage());
+                });
     }
 }

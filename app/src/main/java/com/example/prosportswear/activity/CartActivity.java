@@ -14,11 +14,14 @@ import com.example.prosportswear.R;
 import com.example.prosportswear.adapter.CartAdapter;
 import com.example.prosportswear.modal.CartItem;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CartActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
@@ -41,18 +44,18 @@ public class CartActivity extends AppCompatActivity {
         cart = findViewById(R.id.cart_button);
         profile = findViewById(R.id.profile_button);
         logout = findViewById(R.id.logoutBtn3);
-        checkout = findViewById(R.id.checkout_button); // Added checkout button
+        checkout = findViewById(R.id.checkout_button);
 
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
         cartItems = new ArrayList<>();
-        cartAdapter = new CartAdapter(cartItems);
+        cartAdapter = new CartAdapter(this, cartItems);
         recyclerView.setAdapter(cartAdapter);
 
         setupNavigation();
         loadCartItems();
 
-        checkout.setOnClickListener(v -> checkoutCart()); // Checkout click listener
+        checkout.setOnClickListener(view -> processCheckout());
     }
 
     private void setupNavigation() {
@@ -68,36 +71,84 @@ public class CartActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-
     private void loadCartItems() {
-        if (auth.getCurrentUser() == null) {
-            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        String userId = auth.getCurrentUser().getUid();
         db.collection("users").document(userId).collection("cart")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (queryDocumentSnapshots.isEmpty()) {
+                        Toast.makeText(this, "No items in cart!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     cartItems.clear();
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                    for (DocumentSnapshot document : queryDocumentSnapshots) {
                         CartItem item = document.toObject(CartItem.class);
-                        cartItems.add(item);
+                        if (item != null) {
+                            item.setId(document.getId());
+                            cartItems.add(item);
+                        }
                     }
                     cartAdapter.notifyDataSetChanged();
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("CartError", "Error loading cart", e);
-                    Toast.makeText(this, "Failed to load cart", Toast.LENGTH_SHORT).show();
+                    Log.e("FirestoreError", "Failed to load cart: " + e.getMessage());
+                    Toast.makeText(this, "Failed to load cart: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
-    private void checkoutCart() {
-        if (cartItems.isEmpty()) {
-            Toast.makeText(this, "Your cart is empty!", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
-        startActivity(new Intent(CartActivity.this, CheckoutActivity.class));
+
+    private void processCheckout() {
+        String userId = auth.getCurrentUser().getUid();
+        db.collection("users").document(userId).collection("cart")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        List<Map<String, Object>> purchasedItems = new ArrayList<>();
+                        double totalAmount = 0;
+
+                        for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
+                            Map<String, Object> item = new HashMap<>();
+                            item.put("shoeName", doc.getString("shoeName"));
+                            item.put("company", doc.getString("company"));
+                            item.put("quantity", doc.getLong("quantity"));
+                            item.put("price", doc.getDouble("price"));
+                            double itemTotal = doc.getDouble("price") * doc.getLong("quantity");
+                            item.put("total", itemTotal);
+                            totalAmount += itemTotal;
+
+                            purchasedItems.add(item);
+                        }
+
+                        Map<String, Object> bill = new HashMap<>();
+                        bill.put("items", purchasedItems);
+                        bill.put("totalAmount", totalAmount);
+                        bill.put("timestamp", FieldValue.serverTimestamp());
+
+                        db.collection("users").document(userId).collection("Bills")
+                                .add(bill)
+                                .addOnSuccessListener(documentReference -> {
+                                    clearCart(userId);
+                                    Intent intent = new Intent(CartActivity.this, ProfileActivity.class);
+                                    intent.putExtra("billId", documentReference.getId());
+                                    startActivity(intent);
+                                    finish();
+                                });
+                    } else {
+                        Toast.makeText(CartActivity.this, "Cart is empty!", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
+    private void clearCart(String userId) {
+        db.collection("users").document(userId).collection("cart")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                        db.collection("users").document(userId).collection("cart")
+                                .document(doc.getId()).delete();
+                    }
+                });
+    }
 }

@@ -1,23 +1,61 @@
 package com.example.prosportswear.modal;
-public class Shoe {
-    private String name, companyName;
-    private int count, price, id;
 
-    // Required empty constructor for Firestore
+public class Shoe {
+    private String id;
+    private String name;
+    private String companyName;
+    private double price;
+    private int count;
+
+    // Default constructor (needed for Firebase)
     public Shoe() {}
 
-    public Shoe(String name, String companyName, int count, int price, int id) {
+    public Shoe(String id, String name, String companyName, double price, int count) {
+        this.id = id;
         this.name = name;
         this.companyName = companyName;
-        this.count = count;
         this.price = price;
+        this.count = count;
+    }
+
+    // Getters and setters
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
         this.id = id;
     }
 
-    // Getters
-    public String getName() { return name; }
-    public String getCompanyName() { return companyName; }
-    public int getCount() { return count; }
-    public int getPrice() { return price; }
-    public int getId() { return id; }
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
 }

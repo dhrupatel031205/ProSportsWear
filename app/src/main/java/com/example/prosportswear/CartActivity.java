@@ -90,29 +90,13 @@ public class CartActivity extends AppCompatActivity {
                     Toast.makeText(this, "Failed to load cart", Toast.LENGTH_SHORT).show();
                 });
     }
-
     private void checkoutCart() {
         if (cartItems.isEmpty()) {
             Toast.makeText(this, "Your cart is empty!", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        String userId = auth.getCurrentUser().getUid();
-        db.collection("users").document(userId).collection("cart")
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        document.getReference().delete(); // Clear cart
-                    }
-                    cartItems.clear();
-                    cartAdapter.notifyDataSetChanged();
-                    Toast.makeText(this, "Checkout Successful!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(CartActivity.this, CheckoutActivity.class)); // Navigate to checkout page
-                    finish();
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("CheckoutError", "Error during checkout", e);
-                    Toast.makeText(this, "Failed to checkout", Toast.LENGTH_SHORT).show();
-                });
+        startActivity(new Intent(CartActivity.this, CheckoutActivity.class));
     }
+
 }

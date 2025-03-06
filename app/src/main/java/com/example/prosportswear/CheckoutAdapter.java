@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.ViewHolder> {
-    private final List<CartItem> checkoutItems;
+public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.CheckoutViewHolder> {
+    private List<CartItem> checkoutItems;
 
     public CheckoutAdapter(List<CartItem> checkoutItems) {
         this.checkoutItems = checkoutItems;
@@ -19,17 +19,16 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.ViewHo
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public CheckoutViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_checkout, parent, false);
-        return new ViewHolder(view);
+        return new CheckoutViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CheckoutViewHolder holder, int position) {
         CartItem item = checkoutItems.get(position);
-        holder.itemName.setText(item.getShoeName());
-        holder.itemQuantity.setText("Qty: " + item.getQuantity());
-        holder.itemPrice.setText("$" + String.format("%.2f", item.getPrice() * item.getQuantity()));
+        holder.itemName.setText(item.getShoeCompany());
+        holder.itemPrice.setText("$" + item.getPrice());
     }
 
     @Override
@@ -37,14 +36,13 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.ViewHo
         return checkoutItems.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView itemName, itemQuantity, itemPrice;
+    static class CheckoutViewHolder extends RecyclerView.ViewHolder {
+        TextView itemName, itemPrice;
 
-        public ViewHolder(@NonNull View itemView) {
+        public CheckoutViewHolder(@NonNull View itemView) {
             super(itemView);
-            itemName = itemView.findViewById(R.id.item_name);
-            itemQuantity = itemView.findViewById(R.id.item_quantity);
-            itemPrice = itemView.findViewById(R.id.item_price);
+            itemName = itemView.findViewById(R.id.checkout_item_name);
+            itemPrice = itemView.findViewById(R.id.checkout_item_price);
         }
     }
 }

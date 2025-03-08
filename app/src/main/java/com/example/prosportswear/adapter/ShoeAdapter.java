@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +22,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import coil.ImageLoader;
+import coil.request.ImageRequest;
 
 public class ShoeAdapter extends RecyclerView.Adapter<ShoeAdapter.ShoeViewHolder> {
     private List<Shoe> shoeList;
@@ -44,10 +47,24 @@ public class ShoeAdapter extends RecyclerView.Adapter<ShoeAdapter.ShoeViewHolder
     @Override
     public void onBindViewHolder(@NonNull ShoeViewHolder holder, int position) {
         Shoe shoe = shoeList.get(position);
+
+        // ✅ Set Text Data
         holder.name.setText(shoe.getName());
         holder.company.setText(shoe.getCompanyName());
         holder.price.setText("Price: $ " + shoe.getPrice());
         holder.count.setText("Stock: " + shoe.getCount());
+
+        // ✅ Load Image using Coil
+        ImageLoader imageLoader = new ImageLoader.Builder(holder.image.getContext()).build();
+        ImageRequest request = new ImageRequest.Builder(holder.image.getContext())
+                .data(shoe.getPic())
+                .crossfade(true)
+                .placeholder(R.drawable.ic_launcher_foreground)
+                .error(R.drawable.ic_launcher_foreground) // Replace with an existing drawable
+                .target(holder.image)
+                .build();
+
+        imageLoader.enqueue(request);
 
         holder.addToCartButton.setOnClickListener(v -> {
             String quantityText = holder.quantityInput.getText().toString().trim();
@@ -62,12 +79,13 @@ public class ShoeAdapter extends RecyclerView.Adapter<ShoeAdapter.ShoeViewHolder
                 return;
             }
 
-            shoe.setCount(shoe.getCount() - quantity); // Reduce stock count locally
-            holder.count.setText("Stock: " + shoe.getCount()); // Update UI
+            shoe.setCount(shoe.getCount() - quantity);
+            holder.count.setText("Stock: " + shoe.getCount());
 
             addToCart(shoe, quantity, v);
         });
     }
+
 
     @Override
     public int getItemCount() {
@@ -78,6 +96,7 @@ public class ShoeAdapter extends RecyclerView.Adapter<ShoeAdapter.ShoeViewHolder
         TextView name, company, price, count;
         EditText quantityInput;
         Button addToCartButton;
+        ImageView image; // ✅ ImageView added
 
         public ShoeViewHolder(View itemView) {
             super(itemView);
@@ -87,9 +106,9 @@ public class ShoeAdapter extends RecyclerView.Adapter<ShoeAdapter.ShoeViewHolder
             count = itemView.findViewById(R.id.shoe_count);
             quantityInput = itemView.findViewById(R.id.quantity_input);
             addToCartButton = itemView.findViewById(R.id.add_to_cart);
+            image = itemView.findViewById(R.id.shoe_image); // ✅ Bind ImageView
         }
     }
-
     private void addToCart(Shoe shoe, int quantity, View view) {
         if (auth.getCurrentUser() == null) {
             Toast.makeText(view.getContext(), "User not logged in", Toast.LENGTH_SHORT).show();
@@ -98,51 +117,42 @@ public class ShoeAdapter extends RecyclerView.Adapter<ShoeAdapter.ShoeViewHolder
         }
 
         String userId = auth.getCurrentUser().getUid();
+
         Map<String, Object> cartItem = new HashMap<>();
-        cartItem.put("shoeId", shoe.getId()); // ✅ Save shoe ID for reference
+        cartItem.put("shoeId", shoe.getId());
         cartItem.put("shoeName", shoe.getName());
         cartItem.put("shoeCompany", shoe.getCompanyName());
         cartItem.put("price", shoe.getPrice());
         cartItem.put("quantity", quantity);
-
-        Log.d("FirestoreDebug", "Adding to cart: " + cartItem);
+        cartItem.put("imageUrl", shoe.getPic()); // ✅ Add the image URL
 
         db.collection("users").document(userId)
                 .collection("cart")
                 .add(cartItem)
                 .addOnSuccessListener(documentReference -> {
-                    Log.d("FirestoreSuccess", "Cart item added with ID: " + documentReference.getId());
                     Toast.makeText(view.getContext(), "Added to Cart!", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("FirestoreError", "Failed to add to cart: " + e.getMessage());
-                    Toast.makeText(view.getContext(), "Failed to add: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(view.getContext(), "Failed to add to cart: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
 
         updateStockCount(shoe, quantity, view);
     }
+
     private void updateStockCount(Shoe shoe, int quantity, View view) {
         if (shoe.getId() == null || shoe.getId().isEmpty()) {
             Toast.makeText(view.getContext(), "Error: Shoe ID is missing!", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // ✅ Correct Collection Path
-        db.collection("Store").document(shoe.getId()) // Use "Store" instead of "shoes"
+        db.collection("Store").document(shoe.getId())
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        // ✅ Fix Field Name
-                        Long currentStock = documentSnapshot.getLong("count"); // Should be "count" not "stock"
-
-                        if (currentStock == null) {
-                            Toast.makeText(view.getContext(), "Error: Stock count missing!", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-
-                        if (currentStock >= quantity) {
-                            db.collection("Store").document(shoe.getId()) // ✅ Same collection name
-                                    .update("count", currentStock - quantity) // ✅ Update "count"
+                        Long currentStock = documentSnapshot.getLong("count");
+                        if (currentStock != null && currentStock >= quantity) {
+                            db.collection("Store").document(shoe.getId())
+                                    .update("count", currentStock - quantity)
                                     .addOnSuccessListener(aVoid -> {
                                         Toast.makeText(view.getContext(), "Stock updated successfully!", Toast.LENGTH_SHORT).show();
                                     })
@@ -160,5 +170,4 @@ public class ShoeAdapter extends RecyclerView.Adapter<ShoeAdapter.ShoeViewHolder
                     Toast.makeText(view.getContext(), "Error fetching shoe data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
-
 }

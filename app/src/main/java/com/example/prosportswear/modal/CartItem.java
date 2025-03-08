@@ -3,51 +3,71 @@ package com.example.prosportswear.modal;
 public class CartItem {
     private String id;
     private String shoeName;
-    private String shoeCompany;
+    private String company;
     private double price;
     private int quantity;
+    private String imageUrl;
 
     public CartItem() {
         // Empty constructor required for Firestore
     }
 
-    public String getId() {
-        return id;
+    public CartItem(String id, String shoeName, String company, double price, int quantity, String imageUrl) {
+        this.id = id;
+        this.shoeName = shoeName;
+        this.company = company;
+        this.price = price;
+        this.quantity = quantity;
+        this.imageUrl = imageUrl;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    // ✅ Getters
+    public String getId() {
+        return id;
     }
 
     public String getShoeName() {
         return shoeName;
     }
 
-    public void setShoeName(String shoeName) {
-        this.shoeName = shoeName;
-    }
-
-    public String getShoeCompany() {
-        return shoeCompany;
-    }
-
-    public void setShoeCompany(String shoeCompany) {
-        this.shoeCompany = shoeCompany;
+    public String getCompany() {
+        return company;
     }
 
     public double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
     public int getQuantity() {
         return quantity;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    // ✅ Setters
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setShoeName(String shoeName) {
+        this.shoeName = shoeName;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

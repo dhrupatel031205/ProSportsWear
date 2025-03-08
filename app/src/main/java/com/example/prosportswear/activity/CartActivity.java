@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 public class CartActivity extends AppCompatActivity {
+
     private RecyclerView recyclerView;
     private CartAdapter cartAdapter;
     private List<CartItem> cartItems;
@@ -36,6 +38,11 @@ public class CartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
 
+        // Initialize Firebase
+        db = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
+
+        // Initialize UI Components
         recyclerView = findViewById(R.id.cart_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -46,8 +53,6 @@ public class CartActivity extends AppCompatActivity {
         logout = findViewById(R.id.logoutBtn3);
         checkout = findViewById(R.id.checkout_button);
 
-        db = FirebaseFirestore.getInstance();
-        auth = FirebaseAuth.getInstance();
         cartItems = new ArrayList<>();
         cartAdapter = new CartAdapter(this, cartItems);
         recyclerView.setAdapter(cartAdapter);
@@ -69,20 +74,28 @@ public class CartActivity extends AppCompatActivity {
     private void navigateTo(Class<?> activityClass) {
         Intent intent = new Intent(CartActivity.this, activityClass);
         startActivity(intent);
-        finish();
+        finish(); // Finish current activity to avoid stacking
     }
+
     private void loadCartItems() {
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        if (auth.getCurrentUser() == null) {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String userId = auth.getCurrentUser().getUid();
 
         db.collection("users").document(userId).collection("cart")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
+                    cartItems.clear();
+
                     if (queryDocumentSnapshots.isEmpty()) {
                         Toast.makeText(this, "No items in cart!", Toast.LENGTH_SHORT).show();
+                        cartAdapter.notifyDataSetChanged(); // Clear UI when empty
                         return;
                     }
 
-                    cartItems.clear();
                     for (DocumentSnapshot document : queryDocumentSnapshots) {
                         CartItem item = document.toObject(CartItem.class);
                         if (item != null) {
@@ -90,6 +103,7 @@ public class CartActivity extends AppCompatActivity {
                             cartItems.add(item);
                         }
                     }
+
                     cartAdapter.notifyDataSetChanged();
                 })
                 .addOnFailureListener(e -> {
@@ -98,46 +112,64 @@ public class CartActivity extends AppCompatActivity {
                 });
     }
 
-
     private void processCheckout() {
+        if (auth.getCurrentUser() == null) {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         String userId = auth.getCurrentUser().getUid();
+
         db.collection("users").document(userId).collection("cart")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    if (!queryDocumentSnapshots.isEmpty()) {
-                        List<Map<String, Object>> purchasedItems = new ArrayList<>();
-                        double totalAmount = 0;
-
-                        for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
-                            Map<String, Object> item = new HashMap<>();
-                            item.put("shoeName", doc.getString("shoeName"));
-                            item.put("company", doc.getString("company"));
-                            item.put("quantity", doc.getLong("quantity"));
-                            item.put("price", doc.getDouble("price"));
-                            double itemTotal = doc.getDouble("price") * doc.getLong("quantity");
-                            item.put("total", itemTotal);
-                            totalAmount += itemTotal;
-
-                            purchasedItems.add(item);
-                        }
-
-                        Map<String, Object> bill = new HashMap<>();
-                        bill.put("items", purchasedItems);
-                        bill.put("totalAmount", totalAmount);
-                        bill.put("timestamp", FieldValue.serverTimestamp());
-
-                        db.collection("users").document(userId).collection("Bills")
-                                .add(bill)
-                                .addOnSuccessListener(documentReference -> {
-                                    clearCart(userId);
-                                    Intent intent = new Intent(CartActivity.this, ProfileActivity.class);
-                                    intent.putExtra("billId", documentReference.getId());
-                                    startActivity(intent);
-                                    finish();
-                                });
-                    } else {
-                        Toast.makeText(CartActivity.this, "Cart is empty!", Toast.LENGTH_SHORT).show();
+                    if (queryDocumentSnapshots.isEmpty()) {
+                        Toast.makeText(this, "Cart is empty!", Toast.LENGTH_SHORT).show();
+                        return;
                     }
+
+                    List<Map<String, Object>> purchasedItems = new ArrayList<>();
+                    double totalAmount = 0;
+
+                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                        Map<String, Object> item = new HashMap<>();
+                        item.put("shoeName", doc.getString("shoeName"));
+                        item.put("company", doc.getString("company"));
+                        item.put("quantity", doc.getLong("quantity"));
+                        item.put("price", doc.getDouble("price"));
+                        double itemTotal = doc.getDouble("price") * doc.getLong("quantity");
+                        item.put("total", itemTotal);
+                        totalAmount += itemTotal;
+
+                        purchasedItems.add(item);
+                    }
+
+                    // Create bill data
+                    Map<String, Object> bill = new HashMap<>();
+                    bill.put("items", purchasedItems);
+                    bill.put("totalAmount", totalAmount);
+                    bill.put("timestamp", FieldValue.serverTimestamp());
+
+                    // Save bill to Firestore
+                    db.collection("users").document(userId).collection("Bills")
+                            .add(bill)
+                            .addOnSuccessListener(documentReference -> {
+                                Log.d("CHECKOUT", "Bill saved with ID: " + documentReference.getId());
+                                Toast.makeText(this, "Checkout successful!", Toast.LENGTH_SHORT).show();
+
+                                clearCart(userId);
+
+                                // Navigate to ProfileActivity after checkout
+                                Intent intent = new Intent(CartActivity.this, ProfileActivity.class);
+                                intent.putExtra("billId", documentReference.getId());
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                                finish();
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e("CHECKOUT", "Failed to save bill: " + e.getMessage());
+                                Toast.makeText(this, "Failed to save bill: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            });
                 });
     }
 
@@ -145,9 +177,23 @@ public class CartActivity extends AppCompatActivity {
         db.collection("users").document(userId).collection("cart")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                        db.collection("users").document(userId).collection("cart")
-                                .document(doc.getId()).delete();
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        WriteBatch batch = db.batch();
+                        for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                            batch.delete(db.collection("users").document(userId)
+                                    .collection("cart").document(doc.getId()));
+                        }
+
+                        batch.commit()
+                                .addOnSuccessListener(aVoid -> {
+                                    cartItems.clear();
+                                    cartAdapter.notifyDataSetChanged();
+                                    Log.d("CLEAR_CART", "Cart cleared");
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e("CLEAR_CART", "Failed to clear cart: " + e.getMessage());
+                                    Toast.makeText(this, "Failed to clear cart: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                });
                     }
                 });
     }

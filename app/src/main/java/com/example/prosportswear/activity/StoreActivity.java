@@ -72,13 +72,12 @@ public class StoreActivity extends AppCompatActivity {
             finish();
         });
     }
-
     private void loadShoes() {
-        db.collection("Store") // ✅ Make sure Firestore collection name is "shoes"
+        db.collection("Store")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
-                        shoeList.clear(); // ✅ Clear list before adding new data
+                        shoeList.clear();
                         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                             try {
                                 String id = document.getId();
@@ -86,14 +85,15 @@ public class StoreActivity extends AppCompatActivity {
                                 String company = document.getString("company");
                                 double price = document.getDouble("price");
                                 long stock = document.getLong("count");
+                                String pic = document.getString("pic"); // ✅ Get image URL
 
-                                // ✅ Add to list
-                                shoeList.add(new Shoe(id, shoeName, company, price, (int) stock));
+                                // ✅ Add to list with image URL
+                                shoeList.add(new Shoe(id, shoeName, company, price, (int) stock, pic));
                             } catch (Exception e) {
                                 Log.e("FirestoreError", "Error mapping document: " + e.getMessage());
                             }
                         }
-                        shoeAdapter.notifyDataSetChanged(); // ✅ Refresh adapter after data update
+                        shoeAdapter.notifyDataSetChanged();
                     } else {
                         Toast.makeText(this, "No store items found.", Toast.LENGTH_SHORT).show();
                     }
@@ -103,4 +103,5 @@ public class StoreActivity extends AppCompatActivity {
                     Log.e("FirestoreError", "Error loading shoes: " + e.getMessage());
                 });
     }
+
 }

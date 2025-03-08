@@ -1,101 +1,101 @@
 package com.example.prosportswear.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.prosportswear.modal.CartItem;
 import com.example.prosportswear.R;
+import com.example.prosportswear.modal.CartItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.List;
 
+import coil.ImageLoader;
+import coil.request.ImageRequest;
+
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder> {
-    private List<CartItem> cartItems;
+
     private Context context;
+    private List<CartItem> cartItems;
     private FirebaseFirestore db;
 
     public CartAdapter(Context context, List<CartItem> cartItems) {
         this.context = context;
         this.cartItems = cartItems;
-        this.db = FirebaseFirestore.getInstance(); // Initialize Firestore
+        this.db = FirebaseFirestore.getInstance();
     }
 
     @NonNull
     @Override
     public CartViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cart_item, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.cart_item, parent, false);
         return new CartViewHolder(view);
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull CartViewHolder holder, int position) {
-        CartItem cartItem = cartItems.get(position);
+        CartItem item = cartItems.get(position);
+        holder.shoeName.setText(item.getShoeName());
+        holder.shoeCompany.setText(item.getCompany());
+        holder.shoePrice.setText("$" + item.getPrice());
+        holder.shoeQuantity.setText("Quantity: " + item.getQuantity());
 
-        // Debugging logs to verify Firestore data
-        Log.d("CartAdapter", "Shoe Name: " + cartItem.getShoeName());
-        Log.d("CartAdapter", "Company Name: " + cartItem.getShoeCompany());
+        // ✅ Load image using Coil
+        ImageLoader imageLoader = new ImageLoader.Builder(context).build();
+        ImageRequest request = new ImageRequest.Builder(context)
+                .data(item.getImageUrl()) // URL of the image
+                .crossfade(true) // Smooth transition
+                .placeholder(R.drawable.ic_launcher_foreground) // Placeholder image
+                .error(R.drawable.ic_launcher_foreground) // Error image
+                .target(holder.shoeImage) // Target ImageView
+                .build();
 
-        holder.shoeName.setText(cartItem.getShoeName());
-        holder.shoeCompany.setText(cartItem.getShoeCompany());
-        holder.price.setText("Price: $ " + cartItem.getPrice());
-        holder.quantity.setText("Qty: " + cartItem.getQuantity());
+        imageLoader.enqueue(request);
 
-        // Handle Remove Button Click
-        holder.removeButton.setOnClickListener(v -> removeItemFromFirestore(cartItem, position));
+        holder.removeButton.setOnClickListener(v -> removeItem(position));
     }
-    private void removeItemFromFirestore(CartItem cartItem, int position) {
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        String itemId = cartItem.getId();
-
-        if (itemId == null || itemId.isEmpty()) {
-            Toast.makeText(context, "Error: Item ID not found!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        db.collection("users").document(userId).collection("cart").document(itemId)
-                .delete()
-                .addOnSuccessListener(aVoid -> {
-                    cartItems.remove(position);
-                    notifyItemRemoved(position);
-                    notifyItemRangeChanged(position, cartItems.size());
-                    Toast.makeText(context, "Item removed from cart!", Toast.LENGTH_SHORT).show();
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("FirestoreError", "Failed to remove item: " + e.getMessage());
-                    Toast.makeText(context, "Failed to remove item: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
-    }
-
 
     @Override
     public int getItemCount() {
         return cartItems.size();
     }
 
-    public static class CartViewHolder extends RecyclerView.ViewHolder {
-        TextView shoeName, shoeCompany, price, quantity;
-        Button removeButton;
+    private void removeItem(int position) {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String id = cartItems.get(position).getId();
 
-        public CartViewHolder(View itemView) {
+        db.collection("users")
+                .document(userId)
+                .collection("cart")
+                .document(id)
+                .delete()
+                .addOnSuccessListener(aVoid -> {
+                    cartItems.remove(position);
+                    notifyItemRemoved(position);
+                });
+    }
+
+    static class CartViewHolder extends RecyclerView.ViewHolder {
+        TextView shoeName, shoeCompany, shoePrice, shoeQuantity;
+        Button removeButton;
+        ImageView shoeImage;
+
+        public CartViewHolder(@NonNull View itemView) {
             super(itemView);
-            shoeName = itemView.findViewById(R.id.cart_shoe_name);
-            shoeCompany = itemView.findViewById(R.id.cart_shoe_company);
-            price = itemView.findViewById(R.id.cart_shoe_price);
-            quantity = itemView.findViewById(R.id.cart_quantity);
-            removeButton = itemView.findViewById(R.id.remove_from_cart);
+            shoeName = itemView.findViewById(R.id.shoe_name);
+            shoeCompany = itemView.findViewById(R.id.shoe_company);
+            shoePrice = itemView.findViewById(R.id.shoe_price);
+            shoeQuantity = itemView.findViewById(R.id.shoe_quantity);
+            removeButton = itemView.findViewById(R.id.remove_button);
+            shoeImage = itemView.findViewById(R.id.shoe_image);
         }
     }
 }

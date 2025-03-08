@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="#99FFFFFF">  <!-- Ripple effect on click -->
+    android:color="#99FFFFFF"> <!-- Ripple effect on click -->
 
     <item>
         <shape android:shape="rectangle">
@@ -11,9 +11,9 @@
             <!-- Beautiful Gradient Background -->
             <gradient
                 android:angle="45"
-                android:startColor="#FF6F61"
-            android:centerColor="#8A2BE2"
-            android:endColor="#1E90FF"
+                android:startColor="#1E90FF"
+            android:centerColor="#4682B4"
+            android:endColor="#00BFFF"
             android:type="linear"/>
 
             <!-- Optional Border -->

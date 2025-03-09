@@ -8,25 +8,39 @@
     android:background="@drawable/gradient_bg"
     tools:context=".activity.LoginActivity">
 
+    <!-- Logo -->
+
     <!-- CardView Container for Centering -->
+
+    <ImageView
+        android:id="@+id/app_logo"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:contentDescription="App Logo"
+        android:src="@drawable/logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.cardview.widget.CardView
+        android:id="@+id/login_card"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:cardCornerRadius="20dp"
         app:cardElevation="10dp"
         android:padding="24dp"
         android:background="@android:color/white"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_logo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.5">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:gravity="center"
+            android:orientation="vertical"
             android:padding="10dp">
 
             <!-- Title: Login -->
@@ -34,70 +48,70 @@
                 android:id="@+id/textViewTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Login"
-                android:textSize="30sp"
-                android:textStyle="bold"
-                android:textColor="#5C00FA"
-                android:gravity="center"
                 android:fontFamily="sans-serif-medium"
-                android:paddingBottom="20dp"/>
+                android:gravity="center"
+                android:paddingBottom="20dp"
+                android:text="Login"
+                android:textColor="#5C00FA"
+                android:textSize="30sp"
+                android:textStyle="bold" />
 
             <!-- Email Input -->
             <EditText
                 android:id="@+id/email"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:hint="Enter Email"
-                android:padding="14dp"
+                android:layout_marginBottom="12dp"
                 android:background="@drawable/rounded_input"
+                android:hint="Enter Email"
                 android:inputType="textEmailAddress"
-                android:textSize="16sp"
-                android:layout_marginBottom="12dp"/>
+                android:padding="14dp"
+                android:textSize="16sp" />
 
             <!-- Password Input -->
             <EditText
                 android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:hint="Enter Password"
-                android:padding="14dp"
+                android:layout_marginBottom="20dp"
                 android:background="@drawable/rounded_input"
+                android:hint="Enter Password"
                 android:inputType="textPassword"
-                android:textSize="16sp"
-                android:layout_marginBottom="20dp"/>
+                android:padding="14dp"
+                android:textSize="16sp" />
 
             <!-- Login Button with Ripple Effect -->
-
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/loginBtn"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:text="Login"
-                android:textSize="18sp"
-                android:textColor="@android:color/white"
+                android:layout_marginBottom="15dp"
                 android:background="@drawable/rounded_button"
                 android:elevation="8dp"
-                android:layout_marginBottom="15dp"/>
+                android:text="Login"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
+
             <!-- ProgressBar (Initially Hidden) -->
             <ProgressBar
                 android:id="@+id/progress"
-                android:visibility="gone"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
 
             <!-- Don't have an account? Register -->
             <TextView
                 android:id="@+id/register"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Don't have an account? Register"
-                android:textSize="16sp"
-                android:textColor="#5C00FA"
-                android:textStyle="bold"
-                android:padding="12dp"
+                android:layout_gravity="center"
                 android:clickable="true"
                 android:focusable="true"
-                android:layout_gravity="center"/>
+                android:padding="12dp"
+                android:text="Don't have an account? Register"
+                android:textColor="#5C00FA"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

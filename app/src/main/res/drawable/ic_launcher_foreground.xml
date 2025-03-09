@@ -18,8 +18,8 @@
     <!-- Stylish ‘P’ Letter with Gradient -->
     <path
         android:pathData="M38,25 L62,25 A15,15 0 0,1 62,55 L38,55 L38,75 L28,75 L28,25 Z M38,45 L62,45 A5,5 0 0,0 62,35 L38,35 Z"
-        android:strokeWidth="2"
-        android:strokeColor="#E5E5E5"
-        android:fillColor="#FF1744"/>
+        android:strokeWidth="5"
+        android:strokeColor="#FF1744"
+        android:fillColor="@color/white"/>
 
 </vector>

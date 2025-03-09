@@ -13,33 +13,48 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ProSportsWear"
         tools:targetApi="31">
+
+        <!-- Profile Activity -->
         <activity
             android:name=".activity.ProfileActivity"
             android:exported="false" />
+
+        <!-- Cart Activity -->
         <activity
             android:name=".activity.CartActivity"
             android:exported="false" />
+
+        <!-- Store Activity -->
         <activity
             android:name=".activity.StoreActivity"
             android:exported="false" />
+
+        <!-- Logout Activity -->
         <activity
             android:name=".activity.LogoutActivity"
-            android:exported="false" />
+            android:exported="true" />
+
+        <!-- Home Activity -->
         <activity
             android:name=".activity.HomeActivity"
-            android:exported="false" />
+            android:exported="true" />
+
+        <!-- Register Activity -->
         <activity
             android:name=".activity.RegisterActivity"
-            android:exported="false" />
+            android:exported="true" />
+
+        <!-- Login Activity -->
         <activity
             android:name=".activity.LoginActivity"
-            android:exported="false" />
+            android:exported="true" />
+
+        <!-- Main Activity (Launcher) -->
         <activity
             android:name=".activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

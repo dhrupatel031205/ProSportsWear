@@ -8,7 +8,6 @@
     android:layout_height="match_parent"
     tools:context=".activity.CartActivity">
 
-    <!-- Logout Button -->
     <Button
         android:id="@+id/logoutBtn3"
         android:layout_width="wrap_content"
@@ -23,7 +22,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- App Logo -->
     <ImageView
         android:id="@+id/app_logo3"
         android:layout_width="50dp"
@@ -34,7 +32,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Page Title (Aligned Beside Logo) -->
     <TextView
         android:id="@+id/cart_title"
         android:layout_width="wrap_content"

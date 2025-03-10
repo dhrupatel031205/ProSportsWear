@@ -5,17 +5,14 @@
     android:viewportWidth="100"
     android:viewportHeight="100">
 
-    <!-- Background Circle with Gradient -->
     <path
         android:pathData="M50,0A50,50 0 1,1 0,50A50,50 0 1,1 50,0"
         android:fillColor="#7244B9"/>
 
-    <!-- Inner Gradient Overlay for Depth Effect -->
     <path
         android:pathData="M50,5A45,45 0 1,1 5,50A45,45 0 1,1 50,5"
         android:fillColor="#4000C8"/>
 
-    <!-- Stylish ‘P’ Letter with Gradient -->
     <path
         android:pathData="M38,25 L62,25 A15,15 0 0,1 62,55 L38,55 L38,75 L28,75 L28,25 Z M38,45 L62,45 A5,5 0 0,0 62,35 L38,35 Z"
         android:strokeWidth="5"

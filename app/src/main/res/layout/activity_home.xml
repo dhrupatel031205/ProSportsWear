@@ -19,6 +19,9 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <!-- Home Title -->
+
+    <!-- Logout Button -->
+
     <TextView
         android:id="@+id/home_title"
         android:layout_width="wrap_content"
@@ -29,10 +32,10 @@
         android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@id/logoutBtn"
+        app:layout_constraintHorizontal_bias="0.19"
         app:layout_constraintStart_toEndOf="@id/app_logo"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Logout Button -->
     <Button
         android:id="@+id/logoutBtn"
         android:layout_width="wrap_content"
@@ -166,29 +169,29 @@
 
         <Button
             android:id="@+id/home_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="65dp"
             android:text="Home"
             android:layout_weight="1" />
 
         <Button
             android:id="@+id/store_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="65dp"
             android:text="Store"
             android:layout_weight="1" />
 
         <Button
             android:id="@+id/cart_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="65dp"
             android:text="Cart"
             android:layout_weight="1" />
 
         <Button
             android:id="@+id/profile_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="65dp"
             android:text="Profile"
             android:layout_weight="1" />
     </LinearLayout>

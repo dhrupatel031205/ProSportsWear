@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ProfileActivity extends AppCompatActivity {
-    private Button logout, home, cart, profile;
+    private Button logout, home, cart, profile, store;
     private TextView userName, userEmail;
     private TableLayout billTable;
     private FirebaseAuth auth;
@@ -49,6 +49,7 @@ public class ProfileActivity extends AppCompatActivity {
         userName = findViewById(R.id.user_name);
         userEmail = findViewById(R.id.user_email);
         billTable = findViewById(R.id.bill_table);
+        store = findViewById(R.id.store_button);
 
         // ✅ Display User Info
         if (user != null) {
@@ -60,15 +61,34 @@ public class ProfileActivity extends AppCompatActivity {
             userName.setText("Guest");
         }
 
-        // ✅ Navigation Handling
-        home.setOnClickListener(v -> navigateTo(HomeActivity.class));
-        cart.setOnClickListener(v -> navigateTo(CartActivity.class));
-        profile.setOnClickListener(v -> navigateTo(ProfileActivity.class));
+        // ✅ Intent-Based Navigation
+        home.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileActivity.this, HomeActivity.class);
+            startActivity(intent);
+            finish(); // ✅ Close current activity
+        });
+
+        cart.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileActivity.this, CartActivity.class);
+            startActivity(intent);
+            finish(); // ✅ Close current activity
+        });
+        store.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileActivity.this, StoreActivity.class);
+            startActivity(intent);
+            finish(); // ✅ Close current activity
+        });
+
+        profile.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileActivity.this, ProfileActivity.class);
+            startActivity(intent);
+            finish(); // ✅ Close current activity
+        });
 
         // ✅ Logout Handling
         logout.setOnClickListener(v -> {
             auth.signOut();
-            startActivity(new Intent(ProfileActivity.this, LoginActivity.class));
+            startActivity(new Intent(ProfileActivity.this, LogoutActivity.class));
             finish();
         });
     }
@@ -110,7 +130,7 @@ public class ProfileActivity extends AppCompatActivity {
     private void setupTableHeader() {
         TableRow header = new TableRow(this);
 
-        String[] headerText = {"Shoe Name", "Qty", "Price", "Total"};
+        String[] headerText = {"Item Name", "Qty", "Price", "Total"};
         for (String text : headerText) {
             TextView headerCell = new TextView(this);
             headerCell.setText(text);
@@ -118,12 +138,13 @@ public class ProfileActivity extends AppCompatActivity {
             headerCell.setGravity(Gravity.CENTER);
             headerCell.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_light));
             headerCell.setTextColor(getResources().getColor(android.R.color.white));
-            header.addView(headerCell); // ✅ Changed from 'row' to 'header'
+            header.addView(headerCell);
         }
 
         billTable.addView(header);
     }
 
+    // ✅ Add Bill to Table and Calculate Total
     private double addBillToTable(Map<String, Object> data) {
         List<Map<String, Object>> items = new ArrayList<>();
         Object itemsObject = data.get("items");
@@ -143,7 +164,7 @@ public class ProfileActivity extends AppCompatActivity {
             double price = item.get("price") != null ? ((Number) item.get("price")).doubleValue() : 0.0;
             double total = item.get("total") != null ? ((Number) item.get("total")).doubleValue() : 0.0;
 
-            billTotal += total; // ✅ Add to the bill total
+            billTotal += total;
 
             TableRow row = new TableRow(this);
             String[] rowData = {shoeName, String.valueOf(quantity), String.valueOf(price), String.valueOf(total)};
@@ -162,13 +183,16 @@ public class ProfileActivity extends AppCompatActivity {
         // ✅ Add Total Row for Each Individual Bill
         TableRow totalRow = new TableRow(this);
 
-        // ✅ Total Label
+        // ✅ Total Label (span 3 columns)
         TextView totalLabel = new TextView(this);
         totalLabel.setText("Total:");
         totalLabel.setPadding(16, 16, 16, 16);
         totalLabel.setGravity(Gravity.CENTER);
         totalLabel.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_light));
         totalLabel.setTextColor(getResources().getColor(android.R.color.white));
+        TableRow.LayoutParams totalLabelParams = new TableRow.LayoutParams();
+        totalLabelParams.span = 3;
+        totalLabel.setLayoutParams(totalLabelParams);
         totalRow.addView(totalLabel);
 
         // ✅ Total Value
@@ -180,60 +204,8 @@ public class ProfileActivity extends AppCompatActivity {
         totalValue.setTextColor(getResources().getColor(android.R.color.white));
         totalRow.addView(totalValue);
 
-        // ✅ Add empty cells to align the total row properly
-        for (int i = 0; i < 2; i++) {
-            TextView emptyCell = new TextView(this);
-            emptyCell.setPadding(16, 16, 16, 16);
-            totalRow.addView(emptyCell);
-        }
-
         billTable.addView(totalRow);
 
-        // ✅ Add Space After Each Bill
-        TableRow spaceRow = new TableRow(this);
-        TextView spaceCell = new TextView(this);
-        spaceCell.setText("");
-        spaceCell.setHeight(30); // ✅ Space Height
-        spaceRow.addView(spaceCell);
-        billTable.addView(spaceRow);
-
-        return billTotal; // ✅ Return total of each bill (fixed)
-    }
-
-
-    // ✅ Add Total Row at the End
-    private void addTotalAmountRow(double totalAmount) {
-        TableRow row = new TableRow(this);
-
-        // ✅ Label Cell
-        TextView totalLabel = new TextView(this);
-        totalLabel.setText("Total Amount:");
-        totalLabel.setPadding(16, 16, 16, 16);
-        totalLabel.setGravity(Gravity.CENTER);
-        totalLabel.setTextColor(getResources().getColor(android.R.color.black));
-        totalLabel.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_light));
-        totalLabel.setTextSize(16);
-        row.addView(totalLabel);
-
-        // ✅ Value Cell
-        TextView totalValue = new TextView(this);
-        totalValue.setText(String.format("%.2f", totalAmount));
-        totalValue.setPadding(16, 16, 16, 16);
-        totalValue.setGravity(Gravity.CENTER);
-        totalValue.setTextColor(getResources().getColor(android.R.color.black));
-        totalValue.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_light));
-        totalValue.setTextSize(16);
-        row.addView(totalValue);
-
-        // ✅ Add padding/margin for better spacing
-        row.setPadding(0, 20, 0, 20);
-
-        billTable.addView(row);
-    }
-
-    // ✅ Navigate to another activity
-    private void navigateTo(Class<?> targetActivity) {
-        Intent intent = new Intent(ProfileActivity.this, targetActivity);
-        startActivity(intent);
+        return billTotal;
     }
 }

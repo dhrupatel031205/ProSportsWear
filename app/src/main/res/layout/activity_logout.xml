@@ -21,6 +21,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
+        <!-- App Logo -->
+        <ImageView
+            android:id="@+id/app_logo"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/logo"
+        android:contentDescription="App Logo"
+        android:layout_marginBottom="16dp" />
+
         <!-- Thank You Message -->
         <TextView
             android:id="@+id/textViewThankYou"
@@ -38,7 +47,6 @@
             android:id="@+id/loginB"
             android:layout_width="100dp"
             android:layout_height="50dp"
-            android:layout_weight="2"
             android:text="Login"
             android:textSize="18sp"
             android:textColor="@android:color/white"

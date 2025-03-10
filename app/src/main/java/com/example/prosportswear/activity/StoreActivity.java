@@ -26,7 +26,7 @@ public class StoreActivity extends AppCompatActivity {
     private ShoeAdapter shoeAdapter;
     private List<Shoe> shoeList;
     private FirebaseFirestore db;
-    private Button btnCart, btnProfile, btnRefresh;
+    private Button btnCart, btnProfile, btnRefresh, btnLogout;
     private ImageView logoImage;
 
     @Override
@@ -40,6 +40,7 @@ public class StoreActivity extends AppCompatActivity {
         btnProfile = findViewById(R.id.profile_button);
         btnRefresh = findViewById(R.id.home_button);
         logoImage = findViewById(R.id.app_logo);
+        btnLogout = findViewById(R.id.logoutBtn);
 
         // Set up RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -59,6 +60,12 @@ public class StoreActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
+        btnLogout.setOnClickListener(v -> {
+            Intent intent = new Intent(StoreActivity.this, LogoutActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
 
         btnProfile.setOnClickListener(v -> {
             Intent intent = new Intent(StoreActivity.this, ProfileActivity.class);

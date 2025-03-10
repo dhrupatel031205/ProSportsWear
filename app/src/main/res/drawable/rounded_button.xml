@@ -6,7 +6,7 @@
         <shape android:shape="rectangle">
 
             <!-- Rounded corners -->
-            <corners android:radius="30dp"/>
+            <corners android:radius="100dp"/>
 
             <!-- Beautiful Gradient Background -->
             <gradient

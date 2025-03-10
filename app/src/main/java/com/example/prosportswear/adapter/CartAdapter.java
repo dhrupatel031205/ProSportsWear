@@ -43,23 +43,26 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
     @Override
     public void onBindViewHolder(@NonNull CartViewHolder holder, int position) {
         CartItem item = cartItems.get(position);
+
+        // ✅ Set the values from the CartItem object
         holder.shoeName.setText(item.getShoeName());
-        holder.shoeCompany.setText(item.getCompany());
+        holder.shoeCompany.setText(item.getShoeCompany()); // ✅ Fixed getter
         holder.shoePrice.setText("$" + item.getPrice());
         holder.shoeQuantity.setText("Quantity: " + item.getQuantity());
 
         // ✅ Load image using Coil
         ImageLoader imageLoader = new ImageLoader.Builder(context).build();
         ImageRequest request = new ImageRequest.Builder(context)
-                .data(item.getImageUrl()) // URL of the image
-                .crossfade(true) // Smooth transition
-                .placeholder(R.drawable.ic_launcher_foreground) // Placeholder image
-                .error(R.drawable.ic_launcher_foreground) // Error image
-                .target(holder.shoeImage) // Target ImageView
+                .data(item.getImageUrl())
+                .crossfade(true)
+                .placeholder(R.drawable.ic_launcher_foreground)
+                .error(R.drawable.ic_launcher_foreground)
+                .target(holder.shoeImage)
                 .build();
 
         imageLoader.enqueue(request);
 
+        // ✅ Handle remove button click
         holder.removeButton.setOnClickListener(v -> removeItem(position));
     }
 
@@ -91,7 +94,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         public CartViewHolder(@NonNull View itemView) {
             super(itemView);
             shoeName = itemView.findViewById(R.id.shoe_name);
-            shoeCompany = itemView.findViewById(R.id.shoe_company);
+            shoeCompany = itemView.findViewById(R.id.shoe_company); // ✅ Ensure this ID matches in XML
             shoePrice = itemView.findViewById(R.id.shoe_price);
             shoeQuantity = itemView.findViewById(R.id.shoe_quantity);
             removeButton = itemView.findViewById(R.id.remove_button);

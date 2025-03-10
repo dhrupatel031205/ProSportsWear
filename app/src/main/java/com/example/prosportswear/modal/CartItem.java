@@ -3,7 +3,7 @@ package com.example.prosportswear.modal;
 public class CartItem {
     private String id;
     private String shoeName;
-    private String company;
+    private String shoeCompany;
     private double price;
     private int quantity;
     private String imageUrl;
@@ -12,10 +12,10 @@ public class CartItem {
         // Empty constructor required for Firestore
     }
 
-    public CartItem(String id, String shoeName, String company, double price, int quantity, String imageUrl) {
+    public CartItem(String id, String shoeName, String shoeCompany, double price, int quantity, String imageUrl) {
         this.id = id;
         this.shoeName = shoeName;
-        this.company = company;
+        this.shoeCompany = shoeCompany;
         this.price = price;
         this.quantity = quantity;
         this.imageUrl = imageUrl;
@@ -30,8 +30,8 @@ public class CartItem {
         return shoeName;
     }
 
-    public String getCompany() {
-        return company;
+    public String getShoeCompany() {
+        return shoeCompany;
     }
 
     public double getPrice() {
@@ -55,8 +55,8 @@ public class CartItem {
         this.shoeName = shoeName;
     }
 
-    public void setCompany(String company) {
-        this.company = company;
+    public void setShoeCompany(String shoeCompany) {
+        this.shoeCompany = shoeCompany;
     }
 
     public void setPrice(double price) {

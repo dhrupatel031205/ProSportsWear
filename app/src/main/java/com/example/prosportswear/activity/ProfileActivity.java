@@ -2,9 +2,11 @@ package com.example.prosportswear.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.widget.Button;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,16 +17,16 @@ import com.example.prosportswear.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ProfileActivity extends AppCompatActivity {
-    private Button logout, home, store, cart, profile;
-    private TextView userName, userEmail, billTextView;
+    private Button logout, home, cart, profile;
+    private TextView userName, userEmail;
+    private TableLayout billTable;
     private FirebaseAuth auth;
     private FirebaseUser user;
     private FirebaseFirestore db;
@@ -42,35 +44,24 @@ public class ProfileActivity extends AppCompatActivity {
         // ✅ Initialize UI Components
         logout = findViewById(R.id.logoutBtn2);
         home = findViewById(R.id.home_button);
-        store = findViewById(R.id.store_button);
         cart = findViewById(R.id.cart_button);
         profile = findViewById(R.id.profile_button);
         userName = findViewById(R.id.user_name);
         userEmail = findViewById(R.id.user_email);
-        billTextView = findViewById(R.id.bill_text_view);
+        billTable = findViewById(R.id.bill_table);
 
         // ✅ Display User Info
         if (user != null) {
             userEmail.setText(user.getEmail() != null ? user.getEmail() : "Not Logged In");
             userName.setText(user.getDisplayName() != null ? user.getDisplayName() : "Guest");
+            loadAllBills(); // Load all bills after user info is shown
         } else {
             userEmail.setText("Not Logged In");
             userName.setText("Guest");
         }
 
-        // ✅ Load Bill If Present
-        String billId = getIntent().getStringExtra("billId");
-        if (!TextUtils.isEmpty(billId)) {
-            Log.d("PROFILE", "Received Bill ID: " + billId);
-            loadBill(billId);
-        } else {
-            billTextView.setText("No recent bills found.");
-            Log.w("PROFILE", "No Bill ID found in Intent");
-        }
-
-        // ✅ Handle Navigation
+        // ✅ Navigation Handling
         home.setOnClickListener(v -> navigateTo(HomeActivity.class));
-        store.setOnClickListener(v -> navigateTo(StoreActivity.class));
         cart.setOnClickListener(v -> navigateTo(CartActivity.class));
         profile.setOnClickListener(v -> navigateTo(ProfileActivity.class));
 
@@ -82,43 +73,60 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    private void navigateTo(Class<?> activity) {
-        startActivity(new Intent(ProfileActivity.this, activity));
-        finish();
-    }
-
-    private void loadBill(String billId) {
+    // ✅ Load All Bills From Firestore
+    private void loadAllBills() {
         if (user == null) {
-            Log.e("LOAD_BILL", "User is null");
+            Log.e("LOAD_BILLS", "User is null");
             return;
         }
 
         String userId = user.getUid();
 
-        db.collection("Users")
+        db.collection("users")
                 .document(userId)
                 .collection("Bills")
-                .document(billId)
                 .get()
-                .addOnSuccessListener(documentSnapshot -> handleBillData(documentSnapshot))
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    clearTable(); // ✅ Clear previous table data
+                    setupTableHeader(); // ✅ Set up table header
+
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        addBillToTable(document.getData());
+                    }
+
+                })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to load bill: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    Log.e("LOAD_BILL", "Failed to load bill: " + e.getMessage());
+                    Toast.makeText(this, "Failed to load bills: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e("LOAD_BILLS", "Failed to load bills: " + e.getMessage());
                 });
     }
 
-    private void handleBillData(DocumentSnapshot documentSnapshot) {
-        if (!documentSnapshot.exists()) {
-            Log.w("LOAD_BILL", "No document found with ID");
-            billTextView.setText("No recent bills found.");
-            return;
+    // ✅ Clear Existing Table Data
+    private void clearTable() {
+        billTable.removeAllViews();
+    }
+
+    // ✅ Create Table Header
+    private void setupTableHeader() {
+        TableRow header = new TableRow(this);
+
+        String[] headerText = {"Shoe Name", "Qty", "Price", "Total"};
+        for (String text : headerText) {
+            TextView headerCell = new TextView(this);
+            headerCell.setText(text);
+            headerCell.setPadding(16, 16, 16, 16);
+            headerCell.setGravity(Gravity.CENTER);
+            headerCell.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_light));
+            headerCell.setTextColor(getResources().getColor(android.R.color.white));
+            header.addView(headerCell); // ✅ Changed from 'row' to 'header'
         }
 
-        Log.d("LOAD_BILL", "Document Data: " + documentSnapshot.getData());
+        billTable.addView(header);
+    }
 
-        // ✅ Extract Bill Data Safely
+    private double addBillToTable(Map<String, Object> data) {
         List<Map<String, Object>> items = new ArrayList<>();
-        Object itemsObject = documentSnapshot.get("items");
+        Object itemsObject = data.get("items");
         if (itemsObject instanceof List<?>) {
             for (Object obj : (List<?>) itemsObject) {
                 if (obj instanceof Map<?, ?>) {
@@ -127,60 +135,105 @@ public class ProfileActivity extends AppCompatActivity {
             }
         }
 
-        if (items.isEmpty()) {
-            billTextView.setText("No recent bills found.");
-            return;
-        }
-
-        double totalAmount = documentSnapshot.getDouble("totalAmount") != null
-                ? documentSnapshot.getDouble("totalAmount")
-                : 0.0;
-
-        StringBuilder billDetails = new StringBuilder();
+        double billTotal = 0.0; // ✅ Total for each bill
 
         for (Map<String, Object> item : items) {
             String shoeName = (String) item.getOrDefault("shoeName", "Unknown");
-            String company = (String) item.getOrDefault("company", "Unknown");
             long quantity = item.get("quantity") != null ? ((Number) item.get("quantity")).longValue() : 0;
             double price = item.get("price") != null ? ((Number) item.get("price")).doubleValue() : 0.0;
             double total = item.get("total") != null ? ((Number) item.get("total")).doubleValue() : 0.0;
 
-            billDetails.append(shoeName)
-                    .append(" - ").append(company)
-                    .append("\nQty: ").append(quantity)
-                    .append(" | Price: $").append(price)
-                    .append(" | Total: $").append(total)
-                    .append("\n\n");
+            billTotal += total; // ✅ Add to the bill total
+
+            TableRow row = new TableRow(this);
+            String[] rowData = {shoeName, String.valueOf(quantity), String.valueOf(price), String.valueOf(total)};
+            for (String cellData : rowData) {
+                TextView cell = new TextView(this);
+                cell.setText(cellData);
+                cell.setPadding(16, 16, 16, 16);
+                cell.setGravity(Gravity.CENTER);
+                cell.setBackgroundColor(getResources().getColor(android.R.color.white));
+                cell.setTextColor(getResources().getColor(android.R.color.black));
+                row.addView(cell);
+            }
+            billTable.addView(row);
         }
 
-        billDetails.append("Final Total: $").append(totalAmount);
-        billTextView.setText(billDetails.toString());
+        // ✅ Add Total Row for Each Individual Bill
+        TableRow totalRow = new TableRow(this);
+
+        // ✅ Total Label
+        TextView totalLabel = new TextView(this);
+        totalLabel.setText("Total:");
+        totalLabel.setPadding(16, 16, 16, 16);
+        totalLabel.setGravity(Gravity.CENTER);
+        totalLabel.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_light));
+        totalLabel.setTextColor(getResources().getColor(android.R.color.white));
+        totalRow.addView(totalLabel);
+
+        // ✅ Total Value
+        TextView totalValue = new TextView(this);
+        totalValue.setText(String.valueOf(billTotal));
+        totalValue.setPadding(16, 16, 16, 16);
+        totalValue.setGravity(Gravity.CENTER);
+        totalValue.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_light));
+        totalValue.setTextColor(getResources().getColor(android.R.color.white));
+        totalRow.addView(totalValue);
+
+        // ✅ Add empty cells to align the total row properly
+        for (int i = 0; i < 2; i++) {
+            TextView emptyCell = new TextView(this);
+            emptyCell.setPadding(16, 16, 16, 16);
+            totalRow.addView(emptyCell);
+        }
+
+        billTable.addView(totalRow);
+
+        // ✅ Add Space After Each Bill
+        TableRow spaceRow = new TableRow(this);
+        TextView spaceCell = new TextView(this);
+        spaceCell.setText("");
+        spaceCell.setHeight(30); // ✅ Space Height
+        spaceRow.addView(spaceCell);
+        billTable.addView(spaceRow);
+
+        return billTotal; // ✅ Return total of each bill (fixed)
     }
 
-    private void saveBillToFirestore(String billId, List<Map<String, Object>> items, double totalAmount) {
-        if (user == null || items == null || items.isEmpty()) {
-            Toast.makeText(this, "No bill data to save", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
-        String userId = user.getUid();
-        Map<String, Object> billData = new HashMap<>();
-        billData.put("items", items);
-        billData.put("totalAmount", totalAmount);
-        billData.put("timestamp", System.currentTimeMillis());
+    // ✅ Add Total Row at the End
+    private void addTotalAmountRow(double totalAmount) {
+        TableRow row = new TableRow(this);
 
-        db.collection("Users")
-                .document(userId)
-                .collection("Bills")
-                .document(billId)
-                .set(billData)
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Bill saved successfully!", Toast.LENGTH_SHORT).show();
-                    Log.d("SAVE_BILL", "Bill saved successfully");
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to save bill: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    Log.e("SAVE_BILL", "Failed to save bill: " + e.getMessage());
-                });
+        // ✅ Label Cell
+        TextView totalLabel = new TextView(this);
+        totalLabel.setText("Total Amount:");
+        totalLabel.setPadding(16, 16, 16, 16);
+        totalLabel.setGravity(Gravity.CENTER);
+        totalLabel.setTextColor(getResources().getColor(android.R.color.black));
+        totalLabel.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_light));
+        totalLabel.setTextSize(16);
+        row.addView(totalLabel);
+
+        // ✅ Value Cell
+        TextView totalValue = new TextView(this);
+        totalValue.setText(String.format("%.2f", totalAmount));
+        totalValue.setPadding(16, 16, 16, 16);
+        totalValue.setGravity(Gravity.CENTER);
+        totalValue.setTextColor(getResources().getColor(android.R.color.black));
+        totalValue.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_light));
+        totalValue.setTextSize(16);
+        row.addView(totalValue);
+
+        // ✅ Add padding/margin for better spacing
+        row.setPadding(0, 20, 0, 20);
+
+        billTable.addView(row);
+    }
+
+    // ✅ Navigate to another activity
+    private void navigateTo(Class<?> targetActivity) {
+        Intent intent = new Intent(ProfileActivity.this, targetActivity);
+        startActivity(intent);
     }
 }

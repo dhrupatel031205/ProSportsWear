@@ -28,7 +28,7 @@
         android:layout_height="50dp"
         android:layout_margin="16dp"
         android:contentDescription="App Logo"
-        android:src="@drawable/logo"
+        android:src="@drawable/logo1"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -131,6 +131,7 @@
             android:id="@+id/home_button"
             android:layout_width="wrap_content"
             android:layout_height="65dp"
+            android:backgroundTint="@color/blue"
             android:layout_weight="1"
             android:text="Home"
             android:textColor="@android:color/white"/>
@@ -139,6 +140,7 @@
             android:id="@+id/store_button"
             android:layout_width="wrap_content"
             android:layout_height="65dp"
+            android:backgroundTint="@color/blue"
             android:layout_weight="1"
             android:text="Store"
             android:textColor="@android:color/white" />
@@ -148,6 +150,7 @@
             android:layout_width="wrap_content"
             android:layout_height="65dp"
             android:layout_weight="1"
+            android:backgroundTint="@color/blue"
             android:text="Cart"
             android:textColor="@android:color/white"/>
 
@@ -155,6 +158,7 @@
             android:id="@+id/profile_button"
             android:layout_width="wrap_content"
             android:layout_height="65dp"
+            android:backgroundTint="@color/blue"
             android:layout_weight="1"
             android:text="Profile"
             android:textColor="@android:color/white" />

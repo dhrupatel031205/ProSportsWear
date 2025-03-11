@@ -14,7 +14,7 @@
         android:layout_height="50dp"
         android:layout_margin="16dp"
         android:contentDescription="App Logo"
-        android:src="@drawable/logo"
+        android:src="@drawable/logo1"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
@@ -82,6 +82,7 @@
             android:layout_width="wrap_content"
             android:layout_weight="1"
             android:layout_height="65dp"
+            android:backgroundTint="@color/blue"
             android:text="Home" />
 
         <Button
@@ -89,6 +90,7 @@
             android:layout_width="wrap_content"
             android:layout_weight="1"
             android:layout_height="65dp"
+            android:backgroundTint="@color/blue"
             android:text="Store"/>
 
         <Button
@@ -96,6 +98,7 @@
             android:layout_width="wrap_content"
             android:layout_weight="1"
             android:layout_height="65dp"
+            android:backgroundTint="@color/blue"
             android:text="Cart"/>
 
         <Button
@@ -103,6 +106,7 @@
             android:layout_width="wrap_content"
             android:layout_weight="1"
             android:layout_height="65dp"
+            android:backgroundTint="@color/blue"
             android:text="Profile"/>
     </LinearLayout>
 

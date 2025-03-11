@@ -13,7 +13,7 @@
         android:id="@+id/app_logo"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@drawable/logo"
+        android:src="@drawable/logo1"
         android:contentDescription="App Logo"
         app:layout_constraintBottom_toTopOf="@id/login_card"
         app:layout_constraintStart_toStartOf="parent"

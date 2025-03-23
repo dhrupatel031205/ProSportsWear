@@ -8,20 +8,6 @@
     tools:context=".activity.ProfileActivity">
 
     <!-- App Logo -->
-    <TextView
-        android:id="@+id/home_title2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:gravity="center"
-        android:text="Profile"
-        android:textColor="@color/black"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@id/app_logo"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ImageView
         android:id="@+id/app_logo"
         android:layout_width="50dp"
@@ -31,6 +17,50 @@
         android:src="@drawable/logo1"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/home_title2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:text="Profile"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/app_logo"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- ID Text -->
+    <LinearLayout
+        android:id="@+id/user_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintStart_toEndOf="@id/home_title2"
+        app:layout_constraintEnd_toStartOf="@id/logoutBtn2"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:id="@+id/omesh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Omesh Desai"
+            android:textColor="@color/black"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/user_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/id"
+            android:textColor="@color/black"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <!-- Logout Button -->
     <Button
@@ -85,7 +115,7 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- Bills Table (Fixed Scrolling) -->
+    <!-- Bills Table -->
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -100,7 +130,7 @@
             android:layout_height="wrap_content"
             android:stretchColumns="*"
             android:background="@android:color/darker_gray">
-            <!-- Sample Row -->
+
             <TableRow>
                 <TextView
                     android:text="Date"
@@ -129,39 +159,39 @@
 
         <Button
             android:id="@+id/home_button"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="65dp"
-            android:backgroundTint="@color/blue"
             android:layout_weight="1"
             android:text="Home"
-            android:textColor="@android:color/white"/>
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/blue" />
 
         <Button
             android:id="@+id/store_button"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="65dp"
-            android:backgroundTint="@color/blue"
             android:layout_weight="1"
             android:text="Store"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/blue" />
 
         <Button
             android:id="@+id/cart_button"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="65dp"
             android:layout_weight="1"
-            android:backgroundTint="@color/blue"
             android:text="Cart"
-            android:textColor="@android:color/white"/>
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/blue" />
 
         <Button
             android:id="@+id/profile_button"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="65dp"
-            android:backgroundTint="@color/blue"
             android:layout_weight="1"
             android:text="Profile"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/blue" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -19,9 +19,6 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <!-- Home Title -->
-
-    <!-- Logout Button -->
-
     <TextView
         android:id="@+id/home_title"
         android:layout_width="wrap_content"
@@ -31,11 +28,41 @@
         android:textColor="@color/black"
         android:textSize="30sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@id/logoutBtn"
-        app:layout_constraintHorizontal_bias="0.19"
+        app:layout_constraintEnd_toStartOf="@id/user_info"
         app:layout_constraintStart_toEndOf="@id/app_logo"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Omesh and ID Section -->
+    <LinearLayout
+        android:id="@+id/user_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintStart_toEndOf="@id/home_title"
+        app:layout_constraintEnd_toStartOf="@id/logoutBtn"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:id="@+id/user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/omesh"
+            android:textColor="@color/black"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/user_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/id"
+            android:textColor="@color/black"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Logout Button -->
     <Button
         android:id="@+id/logoutBtn"
         android:layout_width="wrap_content"
@@ -122,44 +149,36 @@
                 android:layout_width="170dp"
                 android:layout_height="150dp"
                 android:layout_margin="4dp"
-                android:layout_columnSpan="1"
-                android:layout_gravity="fill"
                 android:scaleType="centerCrop"
                 android:src="@drawable/shorts" />
 
             <ImageView
                 android:id="@+id/item2"
-                android:layout_width="20dp"
+                android:layout_width="170dp"
                 android:layout_height="150dp"
                 android:layout_margin="4dp"
-                android:layout_columnSpan="1"
-                android:layout_gravity="fill"
                 android:scaleType="centerCrop"
                 android:src="@drawable/shoe" />
 
             <ImageView
                 android:id="@+id/item3"
-                android:layout_width="0dp"
+                android:layout_width="170dp"
                 android:layout_height="150dp"
                 android:layout_margin="4dp"
-                android:layout_columnSpan="1"
-                android:layout_gravity="fill"
                 android:scaleType="centerCrop"
                 android:src="@drawable/foot" />
 
             <ImageView
                 android:id="@+id/item4"
-                android:layout_width="0dp"
-                android:layout_height="148dp"
-                android:layout_columnSpan="1"
-                android:layout_gravity="fill"
+                android:layout_width="170dp"
+                android:layout_height="150dp"
                 android:layout_margin="4dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/football" />
         </GridLayout>
     </LinearLayout>
 
-    <!-- Bottom Navigation (Missing buttons added) -->
+    <!-- Bottom Navigation -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -117,4 +117,31 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
+
+    <!-- First TextView -->
+
+    <!-- Second TextView -->
+
+    <TextView
+        android:id="@+id/hello1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:text="@string/id"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/white"/>
+
+    <TextView
+        android:id="@+id/hello2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/omesh"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/hello1"
+        android:textColor="@color/white"/>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
